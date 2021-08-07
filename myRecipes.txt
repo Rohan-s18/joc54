@@ -6,3 +6,7 @@ Rohan's Recipes:
 4. Python Data Science
 5. R Statistics
 6. HTML & CSS
+7. JDBC
+8. SQL
+
+
