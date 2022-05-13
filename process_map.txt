@@ -1,0 +1,23 @@
+rohan@rohan-VirtualBox:~/Desktop/CFiles/basics$ cat /proc/10973/maps
+55cfc05bd000-55cfc05be000 r--p 00000000 08:03 552452 	/home/rohan/Desktop/CFiles/basics/temp
+55cfc05be000-55cfc05bf000 r-xp 00001000 08:03 552452 	/home/rohan/Desktop/CFiles/basics/temp
+55cfc05bf000-55cfc05c0000 r--p 00002000 08:03 552452 		/home/rohan/Desktop/CFiles/basics/temp
+55cfc05c0000-55cfc05c1000 r--p 00002000 08:03 552452 	/home/rohan/Desktop/CFiles/basics/temp
+55cfc05c1000-55cfc05c2000 rw-p 00003000 08:03 552452 	/home/rohan/Desktop/CFiles/basics/temp
+7f96df5eb000-7f96df5ee000 rw-p 00000000 00:00 0 
+7f96df5ee000-7f96df616000 r--p 00000000 08:03 924858 		/usr/lib/x86_64-linux-gnu/libc.so.6
+7f96df616000-7f96df7ab000 r-xp 00028000 08:03 924858 	/usr/lib/x86_64-linux-gnu/libc.so.6
+7f96df7ab000-7f96df803000 r--p 001bd000 08:03 924858 		/usr/lib/x86_64-linux-gnu/libc.so.6
+7f96df803000-7f96df807000 r--p 00214000 08:03 924858 	/usr/lib/x86_64-linux-gnu/libc.so.6
+7f96df807000-7f96df809000 rw-p 00218000 08:03 924858 	/usr/lib/x86_64-linux-gnu/libc.so.6
+7f96df809000-7f96df816000 rw-p 00000000 00:00 0 
+7f96df825000-7f96df827000 rw-p 00000000 00:00 0 
+7f96df827000-7f96df829000 r--p 00000000 08:03 924521 	/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f96df829000-7f96df853000 r-xp 00002000 08:03 924521 	/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f96df853000-7f96df85e000 r--p 0002c000 08:03 924521 		/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f96df85f000-7f96df861000 r--p 00037000 08:03 924521 		/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7f96df861000-7f96df863000 rw-p 00039000 08:03 924521 	/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+7fff173a8000-7fff173c9000 rw-p 00000000 00:00 0                          	[stack]
+7fff173d5000-7fff173d9000 r--p 00000000 00:00 0                          	[vvar]
+7fff173d9000-7fff173db000 r-xp 00000000 00:00 0                          	[vdso]
+ffffffffff600000-ffffffffff601000 --x p 00000000 00:00 0                  	[vsyscall]
