@@ -1,0 +1,10 @@
+*.pyc
+pycache
+
+*.exe
+
+a.out
+
+.DS_Store
+
+# Parser object keeps track of current token, checks if the code matches the grammar, and emits code along the way.

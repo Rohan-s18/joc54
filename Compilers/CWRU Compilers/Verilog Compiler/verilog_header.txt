@@ -1,0 +1,4 @@
+module my_module(input a, input b, output c, output d);
+add r1, r2, r3
+if (r1 == r2) r3 = r1 + r2;
+endmodule
