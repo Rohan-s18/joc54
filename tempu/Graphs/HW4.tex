@@ -1,0 +1,98 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{CSDS 310: HW4}
+\author{Rohan Singh}
+\date{April 2023}
+
+\begin{document}
+
+\maketitle
+
+\section{Question 1}
+In the marriage algorithm if a person lies about their preferences (switching the ordering on the list) can't improve the final partner in the matching.\\\\
+Let's assume that person $y$ lies about their preference so they say that they prefer $x'$ over $x$ while $y$ really prefers $x$ over $x'$. If the marriage algorithm has not yet matched $x$ and $y$, then $y$ will be matched with $x'$, which $y$ (in reality) prefers less than $x$. If the marriage algorithm already matched $x$ and $y$, then the algorithm will not change the match because $x$ still prefers $y$ over any of the other available partners.\\\\
+Similarly, if person $x$ lies about their preference for $y'$ over $y$ while $x$ really prefers $y$ over $y'$. In that case if $x$ and $y$ are already matched, then marriage algorithm will leave the match as it is, on the other hand if they are not yet matched it will match $x$ with $y$.\\\\
+
+\subsection{Proof}
+This can be proven by contradiction:\\
+Suppose there exists a preference list where switching the ordering leads to a better final partner. This means that the original preference list must have led to an unstable match since as we showed before it will lead to either a less preffered or same matching, which contradicts the stability of the marriage algorithm. Therefore, the original preference list must have led to the best possible match for every person, and switching the ordering cannot improve the final partner.\\\\
+Therefore, switching the ordering on the preference list cannot improve the final partner. 
+
+\section{Question 2}
+\subsection{Reduction}
+We can solve this problem by reducing it to the Marriage Problem.\\\\
+In this reduction to the Marriage Problem, we will be matching the medical school graduates with hospitals. In this reduction each hospital has a placeholder medical school graduate with the lowest possible rank (i.e., ranked last on every medical school graduate's preference list). We can then construct the preference lists for all of the hospitals by ranking the graduates in order of thier preference, followed by the placeholder graduate.\\\\
+After reducing the problem, we can apply the Marriage algorithm to produce a matching between medical school graduates to hospitals, treating the placeholder graduates as if they were actual medical school graduates. With the graduate students "proposing" to the Hospitals. After the completion of the matching we will remove all of the placeholder graduates to obtain the desired stable matching between graduates and hospitals.\\\\
+\subsection{Equivalency Proof}
+We can prove the correctness of the reduction using the equivalence proof for reduction problems.\\\\
+Let M be a stable matching in the reduced Marriage Problem (i.e. the one with placeholders), then we must show that the matching produced by our reduction algorithm that removes the placeholder graduates from the matching is also a stable matching between medical school graduates and hospitals (solution to original problem).\\\\
+Let us say that the matching produced by our reduction algorithm is not stable. This means $\exists$ a medical school graduate G and a hospital H that both prefer each other to their assigned matches. Since the original problem of matching medical school graduates to hospitals had more graduates than positions it implies that G and H are not both placeholder graduates. Let us assume that G is not a placeholder graduate, otherwise we can remove the placeholder graduate from the matching to obtain a new stable matching for or problem.\\\\
+Let us now add G and H to the preference lists of each other. Since G and H both prefer each other to their assigned matches, they will be matched to each other in any stable matching of this modified problem. However, this implies that H must prefer G to the placeholder graduate assigned to them in the original modified Marriage Problem, which contradicts the fact that the matching produced by our reduction algorithm is stable. Therefore, we have shown that if M is a stable matching in the modified Marriage Problem with placeholder graduates, then the matching produced by our reduction algorithm is also a stable matching between medical school graduates and hospitals.\\\\ 
+Conversely, any stable matching between medical school graduates and hospitals can be transformed into a stable matching in the modified Stable Marriage Problem by adding placeholder graduates to the preference lists of each hospital which won't affect anything as they have the lowest preference. \\\\
+Therefore, the reduction is correct and the problem of matching medical school graduates to hospitals can be solved using the Marriage algorithm.
+
+\subsection{Runtime}
+The construction of this problem takes time $\Theta(mn)$ in the worst case and the run time of the marriage algorithm will take $\Theta(mn)$. This makes the overall run time $\Theta(mn)$.
+
+\section{Question 3}
+\subsection{Reduction to Knapsack}
+ We have $n$ items with values $v_1$, $v_2$, ..., $v_n$ and let $S$ be the sum of all the $n$ values. When $S$ is odd it is trivial that we can't divide it equally amongst 2 people. When $S$ is even we can create reduce the partition problem to the knapsack problem by creating a Knapsack with a capacity of S/2, and we create n items values equal to the values of the original items, i.e. $\forall$ $i$, we create a Knapsack item with value $v_i$. We then solve the Knapsack problem on this reduction.\\\\
+
+\subsection{Runtime}
+Reducing the problem from the Partition probelm to the knapsack problem O(n), since we need to create n Knapsack items and compute the total value S of the original items. The running time of solving the Knapsack problem is O(nS), where S is the sum of the item values, additionally, the solution translation will require O(n) time. Therefore, the  running time of solving the partition problem using the Knapsack reduction is O(nS).
+
+\subsection{Equivalency Proof}
+To prove this reduction correct, we must show that the solutions are equivalent, i.e. we need to show that a solution to the partition problem can be obtained from a solution to the Knapsack problem and a solution for the Knapsack problem can be obtained from the partition problem.\\\\
+Let the solution to the Knapsack problem select a subset of the $n$ items with total value S/2, called T. Hence, the items not in T will also have a total value of S/2. Thus, we can divide the original items into two sets: the items in T, and the items not in T. Each set has a total value of S/2, so this is a valid partition of the original items. Therefore, we have obtained a solution to the partition problem from a solution to the Knapsack problem.\\\\
+On the other hand let there be a solution to the partition problem that divides the original items into two sets with equal value S/2, let T be one of those sets. Then, the total value of the items in T is S/2, and the total weight of the corresponding Knapsack items is also S/2, since the values of the Knapsack items are equal to the values of the original items, we can say that T is alson a solution to the Knapsack problem with capacity S/2. Thus, we have obtained a solution to the Knapsack problem from a solution to the partition problem.\\\\
+Since we have shown that a solution to the partition problem can be obtained from a solution to the Knapsack problem and conversely a solution to the Knapsack problem can be obtained from the Partition problem, we have proved the equivalency of the reduction.
+
+\section{Question 4}
+\subsection{Reduction}
+To reduce the partition problem from Question 3 to the route finding problem, we can construct a graph G as follows:
+\begin{itemize}
+    \item Create a node for each item i.
+    \item Create two "source" nodes, one for each person in the partition problem.
+    \item Create a "sink" node.
+    \item For each item i, create two edges: one from the first source node to i with length $v_i$ and cost 0, and one from the second source node to i with length 0 and cost $v_i$.
+    \item Create an edge from each item i to the sink node with length 0 and cost $v_i$.
+    \item Set the total distance limit T on the route finding problem to be S/2.
+\end{itemize}
+
+\subsection{Runtime}
+The running time of the conversion is O(n), where n is the number of items in the partition problem, since we need to construct a graph with 2n+2 nodes and 3n edges.
+
+\subsection{Equivalency Proof}
+Suppose we have a solution to the partition problem that divides the items into two sets, each with total value S/2. Let T be the set of items in one of the two sets. Then, the total value of the items in T is S/2, and the total cost of the corresponding path in the constructed graph is also S/2, since the costs and lengths of the edges corresponding to the items in T are equal to their values. Therefore, there is a path from one source node to the sink node in the constructed graph with total length at most T and total cost at most C, where C is the total value of all the items in the partition problem.\\\\
+Conversely, suppose we have a solution to the route finding problem that finds a path from one source node to the sink node with total length at most T and total cost at most C. Let T be the set of items corresponding to the edges on this path. Then, the total value of the items in T is at most S/2, since the total length of the path is at most T. Therefore, T is a valid solution to the partition problem.\\\\
+Since we have shown that the solution to the route-findgng problem is a valid solution to the Partition problem and vice-versa, we have proved this reduction correct.
+
+\section{Question 5}
+(i) If $G^*$ is very small (i.e. $|V^*|$ is $O(1)$) then there is a polynomial time brute force algorithm for the subgraph isomorphism problem.\\\\
+Proof: If $G^*$ is very small, then the number of possible mappings from $V^*$ to $V$ is also very small. In other words, there are $|V|$ choices for the first vertex in $V^*$, $|V|-1$ choices for the second vertex, which makes a total of $|V|(|V|-1)(|V|-2)\cdots(|V|-|V^*|+1)$ possible mappings. The possible mappings are hence a polynomial of $|V|$, so we can simply check each possible mapping and see if it is a subgraph isomorphism. For each possible mapping, we need to check whether each edge in $G^*$ is mapped to an edge in $G$, which takes $O(|E^*|)$ time, so the total running time is $O(|V|^{|V^*|} |E^*|)$, which is polynomial if $|V^*|$ is $O(1)$.\\\\\\
+(ii) We can reduce the Hamiltonian cycle problem to the subgraph isomorphism problem.\\\\
+Proof: Given an instance of the Hamiltonian cycle problem, i.e. a graph $H=(V_H,E_H)$, we construct a graph $G$ as follows. For each vertex $v\in V_H$, we create a cycle of length $|V_H|$ in $G$, and we label the vertices of this cycle with the vertices of $H$. That is, we create a copy of $H$ for each vertex in $V_H$, and we label the vertices of each copy with the vertices of $H$ in some fixed order. We then add edges between the cycles as follows: for each pair of vertices $(u,v)\in E_H$, we add an edge from vertex $u$ in the cycle for vertex $x$ to vertex $v$ in the cycle for vertex $y$.\\\\
+Now suppose we want to know whether $H$ has a Hamiltonian cycle. We can reduce this to the subgraph isomorphism problem by constructing $G^*$ as follows. Let $V^*$ be a set of $|V_H|$ vertices, and let $E^*$ be a set of $|V_H|-1$ edges that form a path through the vertices of $V^*$. We then map each vertex in $V^*$ to a distinct cycle in $G$, and we map each edge in $E^*$ to the corresponding edge in $G$. \\\\
+By proving this reduction correct, since there is no polynomial runtime for the Hamiltonian Cycle problem, that means there is no polynomial runtime for the subgraph isomorphism problem.
+
+\section{Question 6}
+To compute the product $C(x) = A(x)B(x)$ we need to do the following steps:
+\begin{itemize}
+    \item Compute the FFT of $A(x)$ and $B(x)$.
+    \item Use pointwise multiplication on the obtained FFTs to obtain the FFT of $C(x)$.
+    \item Compute the inverse FFT of the product FFT to obtain $C(x)$.
+\end{itemize}
+We can start by writing $A(x)$ and $B(x)$ in terms of their coefficients:
+$$A(x) = (1, 1, 0, 1, 0, 0, 0, 1)$$
+$$B(x) = (0, 0, 0, 1, 0, 1, 1, 0)$$
+We can compute the FFTs of $A(x)$ and $B(x)$ using the FFT algorithm (recurrsively splitting the input into even and odd indices and combining the results):\\
+$$A(x) = A_e_v_e_n(x^2) + xA_o_d_d(x^2)$$
+$$B(x) = B_e_v_e_n(x^2) + xB_o_d_d(x^2)$$
+\\\\
+Pointwise mulitplying the FFTs to obtain the FFT of $C(x)$:\\\\\\
+Finally, we compute the inverse FFT of the product FFT to obtain $C(x)$:\\\\\\
+Therefore, $C(x) = x^3 + x^4 + x^5 + 3x^6 + x^7 + x^8 + x^9 + x^1^0 + x^1^2+x^1^3$.\\\\
+
+
+\end{document}

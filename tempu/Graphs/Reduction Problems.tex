@@ -1,0 +1,33 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage{graphicx}
+
+\title{Reduction Problems for Maximum Flow}
+\author{Rohan Singh}
+\date{April 19, 2023}
+
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+We can adapt the basic techniques used in maximum-flow algorithms to solve other network-flow problems. Some combinatorial problems can easily be cast as maximum-flow problems. To solve such problems, we convert the problems into problems regarding maximum flow, solving it using \textit{Ford-Fulkerson's method} and then proving the correctness of the algorithm by showing that the solution to the maximum flow problem is equivalent to the solution to our problem.
+
+\section{Maximum-bipartite-matching problem}
+A maximum matching is a matching between vertices with the highest cardinality of edges. Bipartite graphs are grpahs in which the vertex set can be partitioned into L and R (left and right subgraphs).\\ Formally speaking, G = (V,E) is a bipartite graph is:\\
+ L $\cup$ R = V\\ L $\cap$ R = $\Phi$\\ $\forall$ (\textit{v,u}) $\in$ E $\Rightarrow$ \textit{v} $\in$ L and \textit{u} $\in$ \textit{R}
+
+\section{Finding a maximum bipartite matching}
+To solve the maximum bipartite matching problem we can simply construct a flow network in which flows correspond to matchings. We can create a \textbf{corresponding flow network} by creating defining a source \textit{s} and sink \textit{t} vertices in the old network.\\Formally speaking, G' = (V',E'), can be defined as:\\
+V' = V $\cup$ (\textit{s,t})\\
+E' = E $\cup$ $\{$(\textit{s,u}): \textit{u} $\in$ L$\}$ $\cup$ $\{$(\textit{v,t}): \textit{v} $\in$ R$\}$\\
+c(\textit{x,y}) = 1 $\forall$ \textit{x, y} $\in$ V'\\\\
+After creating a corresponding flow network in order to find the maximum matching, we can run the \textbf{Fulkerson-Ford algorithm} to find the maximum flow path.
+
+\section{Equivalency/iff proof}
+Once we construct the corresponding flow network, we must prove that the solution to the maximum flow of the \textit{CFN} is the same as the maximum matching of the bipartite graph. In other words we must prove that if \textit{M} is a matching in G, then there is an integer-valued flow \textit{f} in G' with value $\|$f$\|$ = $\|$M$\|$. Conversely, if f is an integer-valued flow in G', then there is a matching M in G with cardinality $\|$M$\|$ = $\|$f$\|$.\\\\
+This is the corollary for saying that the cardinality of a maximum matching M in a bipartite graph G equals the value of a maximum flow f in its corresponding flow network G'.
+	
+\end{document}
+

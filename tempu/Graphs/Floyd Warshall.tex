@@ -1,0 +1,52 @@
+\documentclass[12pt, letterpaper]{article}
+
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+
+\title{Floyd Warshall Algorithm}
+\author{Rohan Singh}
+\date{April 21, 2023}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+The \textbf{Floyd-Warshall Algorithm} is a dynamic-programming formulation to solve the all-pairs shortest-paths problem on a directed graph G = (V,E).
+
+\section{Algorithm}
+The basic idea behind the Floyd Warshall algorithm is to find the shortest path \textit{p} between any arbitrary indices i and j in the graph, by continously increasing the set of vertices that \textit{p} can have. We fill the table from having 0 intermediate vertices in \textit{p}, to including the set of all of the vertices in the graph in the path \textit{p}.\\\\
+We can define the recurence relation in the Floyd-Warshall algorithm as:\\
+$d^0_i_j$ = $w_i_j$\\
+$d^k_i_j$ = min$\{$$d^k^-^1_i_j$, $d^k^-^1_i_k$ + $d^k^-^1_k_j$  $\}$ (k $\geq$ 0)\\
+Here $d^k_i_j$ represents the shortest path between vertices i and j using the set of intermediate vertices $\{$1,2,3...k$\}$.\\\\
+The pseudocode for the algorithm is:\\
+\textbf{FLOYD-WARSHALL}(W, n):\\
+$D^0$ = W\\
+for k $\in$ (1...n):\\
+\tab for i $\in$ (1...n):\\
+\tab \tab for j $\in$ (1...n):\\
+\tab \tab \tab $D^k_i_j$ = min$\{$$D^k^-^1_i_j$, $D^k^-^1_i_k$ + $D^k^-^1_k_j$  $\}$\\
+return $D^n$
+
+
+\section{Proof of Correctness}
+To prove the correctness of the Floyd Warshall algorithm, we have to use induction.\\\\
+\textbf{Base Case} (k=0):\\
+When k = 0, we have 0 intermediate vertices in the path set in the shortest path between any 2 arbitrary vertices i and j. In this case the shortest path will just be the weight of the edge (if one exists) connecting the vertices i and j. Since the algorithm sets $D^0_i_j$ as $w_i_j$ the base case is true.\\\\
+\textbf{Inductive Step}:\\
+Let the algorithm be correct for k-1 iterations. This means that $D^k^-^1$ is the matrix that contains all of the weights of the shortest paths using the intermediate vertices $\{$1,2,3...k-1$\}$.\\\\
+\textbf{Generalization}:\\
+For the vertex k included in the set of intermediate vertices, there are to possible relations between the shortest path \textit{p} and the vertex k. Either k is not an intermediate vertex in \textit{p} or k is an intermediate vertex in the shortest path \textit{p}.\\\\
+For the first case if the shortest path \textit{p} uses the vertices in the intermediate set $\{$1,2,3...k-1$\}$, then it also uses the vertices in the intermediate set $\{$1,2,3...k$\}$, since the later is the superset of the former.\\\\
+In the second case, k is an intermediate vertex, hence we can find the shortest path will be the same as the shortest path between i and k plus the shortest path between k and j (as k is an intermediate vertex).\\\\
+The following relation takes into account the 2 cases for k:\\
+$D^k_i_j$ = min$\{$$D^k^-^1_i_j$, $D^k^-^1_i_k$ + $D^k^-^1_k_j$  $\}$\\\\
+Since we assumed $D^k^-^1$ using the inductive step. Therefore, $D^k$ contains all of the shortest path weights using the set of intermediate vertices $\{$1,2,3...k$\}$\\\\
+We have proved the Floyd Warshall algorithm to be correct using induction.
+
+
+\section{Space and Runtime Complexity}
+The runtime complexity of the Floyd-Warshall algorithm is $\Theta$($V^3$) because each of the for loops within the algorithm runs V times. Additionally, the space complexity of this algorithm is $\Theta$($V^3$) because we require a 3 dimensional data structure (Rank 3 Tensor) for the dynamic programming tabulation. 
+
+
+\end{document}
