@@ -1,0 +1,49 @@
+\documentclass[12pt, letterpaper]{article}
+
+\title{\textbf{Finding the k-th smallest value in expected linear time\\CSDS 310}}
+\author{\textbf{Rohan Singh}}
+\date{\textbf{April 10, 2023}}
+
+\begin{document}
+
+\maketitle
+
+\section{Problem}
+The problem states that we must find the k-th smallest value of an unsorted array in expected Linear Time, i.e. $\Theta(n)$ expected runtime.
+
+\section{Algorithm}
+
+To solve this problem in expected linear time, we will be using a \textbf{Divide and Conquer Algorithm} similar to the \textit{Quicksort Algorithm}. \\
+
+The Logic behind it is to carry out repreated partitions on a subarray arr[i...j] which would return the pivot \textit{p}. The pivot holds the same properties as it does in quicksort, i.e. 
+\begin{itemize}
+	\item $\forall$ e $\in$ (i....p-1), arr[e] $\leq$ arr[p]
+	\item $\forall$ e $\in$ (p+1....j), arr[e] $\geq$ arr[p]
+\end{itemize}
+
+In other words, arr[p] is the 'p-th' smallest value in the array.\\
+
+Similar to \textit{quicksort} we will recursively divide the array into subarrays around the partition, however, we will only be making a recursive call at the subarray that has the 'k-th' smallest value.\\
+
+The base case of this algorithm is  i = j, i.e. the array is of size one.\\
+
+The algorithm terminates when we after creating a partition, we reach a pivot index that is the same as k.
+
+
+\section{Pseudocode}
+The following method returns the k-th smallest value in the unsorted array, arr.\\\\
+\textbf{getKthSmallest}(arr,p,r,i):\\
+if(p==r)\\
+return arr[p]\\
+q  = partition(arr,p,r)\\
+k = q - p + 1\\
+if (i == k) \\
+return arr[q] \\
+else if(i $<$ k)\\
+return \textbf{getKthSmallest}(arr,p,q-1,i) \\
+else\\
+return \textbf{getKthSmallest}(arr,q+1,r,i)
+
+
+
+\end{document}

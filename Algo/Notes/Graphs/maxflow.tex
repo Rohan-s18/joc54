@@ -1,0 +1,113 @@
+\documentclass[12pt, letterpaper]{article}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+
+\usepackage{graphicx}
+
+\title{Maximum Flow Problem}
+\author{Rohan Singh}
+\date{April 13, 2023}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction to flow graphs}
+One way to interpret directed weighted graphs is as a flow network, where each vertex represents a \textbf{source/sink}  for the flow of a material and the edges represents a \textbf{pipe} and the edge weights represent the maximum carrying capacity of the pipe.\\\\
+Formally, A flow network G = (V,E) is a directed graph in which each edge \textit{(u,v)} $\in$ \textbf{E} has a nonnegative capacity \textit{c(u,v)} $\geq{0}$.\\\\
+A flow in graph G is defined as a real-valued function f: V x V $\rightarrow$ R that satisfies the following constraints:\\
+
+\begin{itemize}
+	\item Capacity constraint: \forall \textit{u, v} \in \textit{V, 0 } $\leq$ \textit{f(u,v)} $\leq$ \textit{c(u,v)}
+	\item Flow conservation: The sum of flow from and to each vertex must be the sum.
+\end{itemize}
+
+\section{Maximum Flow Problem}
+In the maximum-flow problem, we wish to compute the greatest rate at which we can ship material from the source to the sink without violating any capacity constraints.\\\\
+We can adapt the basic techniques used in maximum-flow algorithms to solve other network-flow problems, such as finding a maximum matching in an undirected bipartite graph.\\\\
+
+\section{Ford-Fulkerson Method}
+This is one of the method for solving the maximum flow problem. We call it a “method” rather than an “algorithm” because it encompasses several implementations with differing running times. The Ford-Fulkerson method depends on three important ideas that transcend the method and are relevant to many flow algorithms and problems: residual networks, augmenting paths, and cuts.\\\\
+The Ford-Fulkerson method iteratively increases the value of the flow:
+\begin{itemize}
+	\item We start with f(u,v) = 0 $\forall$ u, v $\in$ V, setting the intial flow value to  0.
+	\item At each iteration, we increase the flow value in G by finding an “augmenting path” in an associated “residual network” $G_f$
+	\item Once we know the edges of an augmenting path in $G_f$ , we can easily identify specific edges in G for which we can change the flow so that we increase the value of the flow.
+	\item We repeatedly augment the flow until the residual network has no more augmenting paths.
+\end{itemize}
+In other words, this method can be generalized as,\\
+\textbf{FF-METHOD} \textit{(G, s, t)}\\
+f(u,v) = 0 $\forall$ u, v $\in$ V\\
+while $\exists$ augmenting path \textit{p} $\in$ $G_f$\\
+\tab augment flow f along p\\
+return f
+
+\section{Residual Networks}
+Given a flow network G and a flow f , the residual network $G_f$ consists of edges with weights that represent how we can change the flow on edges of G. An edge of the flow network can admit an amount of additional flow equal to the edge’s capacity minus the flow on that edge. Hence, the only edges of G that are in $G_f$ are those that can admit more flow.\\\\
+Formally, the residual capacity can be defined as:\\
+$c_f$(\textit{u,v}) = \textit{c}(\textit{u,v}) - \textit{f}(\textit{u,v}) if (\textit{u,v}) $\in$ \textit{E}\\
+or 0 otherwise \\\\
+Given a flow network G = (\textit{V,E}) and a flow \textit{f}, the \textbf{residual network} of G induced by \textit{f} is $G_f$ = (\textit{V,$E_f$}), where\\
+$E_f$ = \{(\textit{u,v}) $\in$ \textit{V$\times$V} : $c_f$(\textit{u,v}) > 0\} \\\\
+The Ford-Fulkerson method repeatedly augments the flow along augmenting paths until it has found a maximum flow. The max-flow min-cut theo- rem, which we shall prove shortly, tells us that a flow is maximum if and only if its residual network contains no augmenting path.
+
+\section{Max Flow and Min Cut Theorem}
+
+If \textit{f} is a flow in a flow network G = (\textit{V,E}) with source \textit{s} and sink \textit{t}, then the following conditions are equivalent:\\
+\begin{itemize}
+	\item \textit{f} is a maximum flow in G.
+	\item The residual network $G_f$ contains no augmenting paths.
+	\item \textit{f = c} (\textit{S, T}) for some cut (\textit{S, T}) of G
+\end{itemize}
+
+\section{Algorithm  Pseudocode}
+FORD-FULKERSON (\textit{G, s, t}):\\
+for (\textit{u,v}) $\in$ E:\\
+\tab \textit{f}(\textit{u,v}) = 0\\
+while $\exists$ path \textit{p} $\in$ $G_f$:\\
+\tab $c_f$(\textit{p}) = min\{$c_f$(\textit{u,v}): (\textit{u,v}) in \textit{p}  \}\\
+\tab for (\textit{u,v}) $\in$ \textit{p}:\\
+\tab \tab if (\textit{u,v}) $\in$ E:\\
+\tab \tab \tab \textit{f}(\textit{u,v}) = \textit{f}(\textit{u,v}) + $c_f$(\textit{p})\\
+\tab \tab else \textit{f}(\textit{u,v}) = \textit{f}(\textit{v,u}) - $c_f$(\textit{p})\\
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

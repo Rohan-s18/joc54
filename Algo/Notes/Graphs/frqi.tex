@@ -1,0 +1,85 @@
+\documentclass[letterpaper, 12pt]{article}
+
+\usepackage{amssymb}
+
+
+\title{Using Flexible Representation of Quantum Images for Classical Image Compression}
+\author{Rohan Singh}
+\date{April 24, 2023}
+
+\begin{document}
+
+\maketitle
+
+\section{Abstract}
+Flexible Representation of Quantum Images (FRQI) is a technique for representing and processing classical images in quantum computing. FRQI involves the principles of quantum mechanics such as superposition and entanglement to help speed up classical image processing algorithms.\\\\
+More specifically, FRQI represents classical images as superpositions of quantum states. This is done by representing every pixel in the image as a quantum state, with its corresponding coefficient $C_i$ of the state corresponding to the pixel's intensity. The images are then represented as a linear combination of these states.\\\\
+In this paper we will be looking at the compression of classical images using FRQI techniques of image representation.
+
+\section{FRQI Image representation}
+As you may already know, in classic computing we represent images as a matrix of pixels, where a pixel at location $(x,y)$ has a designated value for intensity (rgb/greyscale etc.). In a nutshell, any sort of image processing done in classical computing is simply a manipulation of the matrix representing the pixels and the pixel values themselves. So before we get into the image compression, it is important to understand what a quantum image is and how can we represent it.
+
+\subsection{Images as Quantum States}
+We can represent a classical image using FRQI as:
+$$
+|\psi\rangle = \frac{1}{\sqrt{N^2}} \sum_{x,y} I(x,y) |x,y\rangle
+$$
+In the eqn above, $|\,x,y\rangle$ is the basis state corresponding to the classical pixel at location $(x,y)$ in the image that we have, $I(x,y)$ is the intensity of the pixel $(x,y)$, additionally $N$ is the size, the following linear combination of the basis states yields us $|\psi\rangle$ which represents the quantum state of the classical image.
+
+\subsection{Image reconstruction from Quantum States}
+Similarly, in order to reconstruct the classical image from $|\psi\rangle$ we must measure the quantum state in the computational basis and reconstruct it using the probabilities that we get for measuring it in all of the basis states.\\\\
+Using Born's rule:
+$$
+P(x,y) = |\langle x,y|\psi\rangle|^2
+$$\\
+After measuring the quantum state $|\psi\rangle$ in the computational basis, the classical image can be reconstructed from the measured probabilities.\\
+
+\section{Compression of Classical Images}
+To compress an image we must first convert it into a quantum state. After doing that we use a \textit{Unitary Matrix} to make the state smaller while still keeping most of the important parts. Just as mentioned in the previous section, we then measure the image to get a new set of numbers to reconstruct the compressed image. 
+
+\subsection{Steps for Compression of Images}
+The steps to compress a classical image usign FRQI are:\\\\
+1. We will first represent the classical image as a quantum state $|\psi\rangle$ using the FRQI representation:
+
+$$
+|\psi\rangle = \frac{1}{\sqrt{N^2}} \sum_{x,y} I(x,y) |x,y\rangle
+$$
+2. We will now apply a unitary transformation matrix $U$ that will compress the quantum state representing the image:
+$$
+|\phi\rangle = U|\psi\rangle
+$$
+3. We will then measure the compressed quantum state $|\phi\rangle$ in the computational basis of the image to obtain a reduced set of coefficients (here $k$ is the desired compression rate):
+
+$$
+\{p_1, p_2, ..., p_k\}
+$$
+
+\section{Decompression of Classical Images}
+To decompress the compressed image we can simply use the same trick that we used to compress the image, however instead of using $U$ as the Unitary Matrix, we will be using $U^{-1}$ as the unitary matrix. 
+
+\subsection{Steps for Decompression of Images}
+We can decompress the compressed image using FRQI by:\\\\
+1. We will use the set of coefficients for the compressed image $\{p_1, p_2, ..., p_k\}$ to reconstruct the compressed quantum state (here $|\phi_i\rangle$ is the $i$th eigenvector of the compression unitary matrix $U$):
+
+$$
+|\phi'\rangle = \sum_{i=1}^k \sqrt{p_i} |\phi_i\rangle
+$$
+2. We will then apply the inverse of the compression unitary matrix $U^{-1}$ (it exists because $U$ is a unitary matrix) to the compressed quantum state to obtain the original quantum state $|\psi'\rangle$:
+
+$$
+|\psi'\rangle = U^{-1}|\phi'\rangle
+$$
+3. We can obtain the classical image by measuring the quantum state $|\psi'\rangle$ in the computational basis. \\
+
+
+\section{Mathematical Overview}
+In this section we will be going over some of the mathematical tools used in this paper.
+
+\subsection{Unitary Matrices}
+A Unitary Matrix $U$ is defined as:\\
+$U_m_\times_m$ $\in$ $\mathbb{C}^m^\times^m$ such that\\
+$U$$U^\dag$ = $U^\dag$$U$ = $I$\\
+One important thing about Unitary Matrices is the preservation of vector length.
+
+
+\end{document}

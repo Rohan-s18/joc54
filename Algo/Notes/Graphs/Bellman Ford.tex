@@ -1,0 +1,39 @@
+\documentclass[12pt, letterpaper]{article}
+
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+
+\usepackage{graphicx}
+
+\title{Bellman Ford Algorithm}
+\author{Rohan Singh}
+\date{April 21, 2023}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+The \textbf{Bellman-Ford algorithm} is an algorithm used to solve the shortest path problems in a general case where edge weights may be negative. This algorithm either returns \textit{False} if there is a negative weight cycle (no solution exists), or it returns \textit{True} along with the shortest path and weights.
+
+\section{Algorithm}
+The main idea behind the Bellman-Ford algorithm is to progressively \textbf{relax} each edge, i.e. decreasing the estimate \textbf{dist[\textit{v}]} on the weight of the shortest path from the source vertex \textit{s} to each destination vertex \textit{v} $\in$ V until it achieves the acutal shortest path $\delta$(\textit{s,v}). \\\\
+The Bellman-Ford algorithm uses \textbf{Dynamic Programming} to find the shortest path (or finding a negative weight cycle). \\\\
+This is the pseudocode for the Bellman-Ford Algorithm:\\\\
+\textbf{BellmanFord(G):}\\
+//This loop relaxes the edges $|$V$|$ times\\
+for i $\in$ [0,1,2,3....,len(V)]:\\
+\tab for edge (\textit{u,v}) $\in$ E:\\
+\tab \tab dist[v] = min(dist[u] + c(\textit{u,v}), dist[v])\\
+//This loop finds any negative weight cycles\\
+for edge (\textit{u,v}) $\in$ E:\\
+\tab if(dist[v] $>$ dist[u] + c(\textit{u,v}):\\
+\tab \tab return False\\
+return True
+
+\section{Proof of Correctness}
+I said so, also too lazy to type it out.
+
+\section{Space and Runtime complexity}
+The runtime for the Bellman-Ford algorithm is $\Theta$(VE), where V is the number of vertices and E is the number fo edges in the Graph G. This is because, in the main loop we run through each vertex of the graph and in each iteration of the main loop we go through each edge of the graph.\\\\
+
+\end{document}

@@ -1,0 +1,160 @@
+\documentclass[letterpaper,c12pt]{article}
+
+\usepackage{graphicx}
+
+\title{Memory Hierarchy}
+\author{Rohan Singh}
+\date{April 23, 2023}
+
+\begin{document}
+	
+\maketitle
+
+\section{Introduction}
+The principle of locality states that programs access a relatively small portion of their address space at any instant of time. The two types of locality are: 
+\begin{itemize}
+	\item \textbf{Temporal locality} (locality in time): if an item is referenced, it will tend to be referenced again soon.
+	\item \textbf{Spatial locality} (locality in space): if an item is referenced, items whose addresses are close by will tend to be referenced soon.
+\end{itemize}
+We take advantage of the principle of locality by implementing the memory of a computer as a \textbf{memory hierarchy}. A memory hierarchy consists of multiple levels of memory with different speeds and sizes. The faster memories are more expensive per bit than the slower memories and thus are smaller. The goal is to present the user with as much memory as is available in the cheapest technology, while providing access at the speed offered by the fastest memory.\\\\
+Some important terms are:
+\begin{itemize}
+	\item \textbf{block (or line)}: The minimum unit of information that can be either present or not present in a cache.
+	\item \textbf{hit rate}: The fraction of memory accesses found in a level of the memory hierarchy.
+	\item \textbf{miss rate}: The fraction of memory accesses not found in a level of the memory hierarchy.
+	\item \textbf{hit time}: The time required to access a level of the memory hierarchy, including the time needed to determine whether the access is a hit or a miss.
+	\item \textbf{miss penalty}: The time required to fetch a block into a level of the memory hierarchy from the lower level, including the time to access the block, transmit it from one level to the other, insert it in the level that experienced the miss, and then pass the block to the requestor.
+\end{itemize}
+
+\section{Memory Technology}
+There are four primary technologies used in memory hierarchies: 
+\begin{itemize}
+	\item \textbf{SRAM (static random access memory)}: levels closer to the processor (caches) use SRAM.
+	\item \textbf{DRAM (dynamic random access memory)}: Main memory is implemented from DRAM.
+	\item \textbf{Flash Memory}: The third technology is flash memory, which is used for storage.
+	\item \textbf{Magnetic Disk}: The fourth technology, used to implement the largest and slowest level in the hierarchy in servers, is magnetic disk.
+\end{itemize}
+DRAMs store the charge on a capacitor, it cannot be kept indefinitely and must periodically be refreshed. That is why this memory structure is called dynamic, to refresh the cell, we merely read its contents and write it back.
+
+\section{Intro to Cache}
+Cache was the name chosen to represent the level of the memory hierarchy between the processor and main memory in the first commercial computer to have this extra level.\\\\
+\textbf{Direct-mapped cache} is a cache structure in which each memory location is mapped to exactly one location in the cache. Almost all direct-mapped caches use this mapping to find a block:\\
+(Block address) modulo (Number of blocks in the cache)\\
+where the address of the block is:\\
+Byte address / Bytes per block\\\\
+If the number of entries in the cache is a power of 2, then modulo can be computed simply by using the low-order log2 (cache size in blocks) bits of the address. Thus, an 8-block cache uses the three lowest bits (8 = $2^3$) of the block address. \\\\
+Since each cache location can contain the contents of a number of different memory locations, we can add a set of \textbf{tags} to the cache. The tags contain the address information required to identify whether a word in the cache corresponds to the requested word. The tag needs only to contain the \textbf{upper portion of the address}, corresponding to the bits that are not used as an index into the cache.\\\\
+\textbf{Valid bits} are fields in the tables of a memory hierarchy that indicate that the associated block in the hierarchy contains valid data.\\\\
+The index of a cache block, together with the tag contents of that block, uniquely specifies the memory address of the word contained in the cache block. In the MIPS architecture, since words are aligned to multiples of four bytes, the least significant two bits of every address specify a byte within a word. Hence, the least significant two bits are ignored when selecting a word in the block.\\\\
+For fetching the address, if the tag and upper bits of the address are equal and the valid bit is on, then the request hits in the cache, and the word is supplied to the processor. Otherwise, a miss occurs.\\\\
+The total number of bits needed for a cache is a function of the cache size and the address size. The size of the cache for the following situation:
+\begin{itemize}
+	\item 32-bit addresses
+	\item A direct-mapped cache
+	\item The cache size is $2^n$ blocks, so n bits are used for the index
+	\item The block size is $2^m$ words ($2^(m+2)$ bytes), so m bits are used for the word within the block, and two bits are used for the byte part of the address
+\end{itemize}
+the size of the tag field is:\\
+32 - (n + m + 2). \\
+The total number of bits in a direct-mapped cache is:\\
+$2^n$ x (block size + tag size + valid field size)\\\\
+\textbf{Cache miss}: A request for data from the cache that cannot be filled because the data is not present in the cache. The control unit must detect a miss and process the miss by fetching the requested data from memory (or a lower-level cache.\\We can now define the steps to be taken on an instruction cache miss:
+\begin{itemize}
+	\item Send the original PC value (current PC – 4) to the memory. Since the program counter is incremented in the first clock cycle of execution, the address of the instruction that generates an instruction cache miss is equal to the value of the program counter minus 4.
+	\item Instruct main memory to perform a read and wait for the memory to complete its access.
+	\item Write the cache entry, putting the data from memory in the data portion of the entry, writing the upper bits of the address (from the ALU) into the tag field, and turning the valid bit on.
+	\item Restart the instruction execution at the first step, which will refetch the instruction, this time finding it in the cache.
+	\\
+\end{itemize}
+\textbf{Write-through} is a scheme in which writes always update both the cache and the next lower level of the memory hierarchy, ensuring that data is always consistent between the two. With a write-through scheme, every write causes the data to be written to main memory, which makes it very innefficient and slow.\\\\
+One solution to this problem is to use a \textbf{write buffer}. A write buffer stores the data while it is waiting to be written to memory. After writing the data into the cache and into the write buffer, the processor can continue execution.\\\\
+\textbf{Write-back}: In a write-back scheme, when a write occurs, the new value is written only to the block in the cache. The modified block is written to the lower level of the hierarchy when it is replaced.\\\\
+\textbf{Split cache} is a scheme
+in which a level of the memory hierarchy
+is composed of two independent caches that operate in parallel with each other, with one handling instructions and one handling data.\\\\
+The use of a larger block decreases the miss rate and improves the efficiency of the cache by reducing the amount of tag storage relative to the amount of data storage in the cache. Although a larger block size decreases the miss rate, it can also increase the miss penalty. If the miss penalty increased linearly with the block size, larger blocks could easily lead to lower performance.
+
+
+\section{Measuring and Improving Cache Performance}
+There are two main techniques for improving cache performance. One focuses on reducing the miss rate by reducing the probability that two different memory blocks will contend for the same cache location. The second technique reduces the miss penalty by adding an additional level to the hierarchy. This technique, called multilevel caching.\\\\
+CPU time = (CPU execution clock cycles + Memory-stall clock cycles) x Clock cycle time\\
+Where,\\
+Memory-stall clock cycles - (Read-stall cycles + Write-stall cycles)\\
+Read-stall cycles = (Reads/Program) x Read miss rate x Read miss penalty\\
+Write-stall cycles = [(Writes/Program) x Write miss rate x Write miss penalty] + Write buffer stalls\\\\
+Average memory access time is the average time to access memory considering both hits and misses and the frequency of different accesses; it is equal to the following:\\
+AMAT = Time for a hit + (Miss rate x Miss penalty)\\\\
+\textbf{Fully Assoicative Cache}: A cache structure in which a block can be placed in any location in the cache.\\\\
+\textbf{Set-associative cache}: A cache that has a fixed number of locations (at least two) where each block can be placed. A set-associative cache with n locations for a block is called an n-way set-associative cache. An n-way set-associative cache consists of a number of sets, each of which consists of n blocks. Each block in the memory maps to a unique set in the cache given by the index field, and a block can be placed in any element of that set.\\
+In a set-associative cache, \textbf{the set containing a memory block} is given by:\\
+ (Block number) modulo (Number of sets in the cache)\\\\
+ Since the block may be placed in any element of the set, all the tags of all the elements of the set must be searched. In a fully associative cache, the block can go anywhere, and all tags of all the blocks in the cache must be searched. The advantage of increasing the degree of associativity is that it usually decreases the miss rate. The main disadvantageis a potential increase in the hit time.\\\\
+ In order to select data from cache, in set-associative cache, we use n-to-1 multiplexors which select the datapath from the block whose tag matches with the requested signal.\\\\
+ When a miss occurs in a direct-mapped cache, the requested block can go in exactly one position, and the block occupying that position must be replaced.  In a set-associative cache, we must choose among the blocks in the selected set. The most commonly used scheme is \textbf{least recently used (LRU)} which is a replacement scheme in which the block replaced is the one that has been unused for the longest time.\\\\
+ \textbf{multilevel caching}: most microprocessors support an additional level of caching. This second-level cache is normally on the same chip and is accessed whenever a miss occurs in the primary cache. This reduces the miss penalty for caches, as the access time for cache is less than main memory.\\\\
+ \textbf{multilevel cache}: a memory hierarchy with multiple levels of caches, rather than just a cache and main memory.
+
+
+
+\section{Dependable Memory Hierarchy}
+There are two states of delivered service:\\
+1) \textit{Service Accomplishment}: where the service is delivered as specified.\\
+2) \textit{Service Interruption}: where the delivered service is different from the specified service.\\\\
+Transitions from state 1 to state 2 are caused by \textbf{failures}, and transitions from state 2 to state 1 are called \textbf{restorations}.\\\\
+The measures of reliability are:\\
+\textit{Mean time to failure (MTTF)} is a reliability measure. A related term is \textit{annual failure rate (AFR)}, which is just the percentage of devices that would be expected to fail in a year for a given MTTF.\\\\
+Service interruption is measured as mean time to repair (MTTR). Mean time between failures (MTBF) is simply the sum of MTTF + MTTR.\\
+Availability = MTTF/MTBR\\\\
+\textbf{Hamming Distance} is just the minimum number of bits that are different between any two correct bit patterns. For example, the distance between 011011 and 001111 is two.\\\\
+The steps for calculating the \textit{Hamming Error Correction Code} are:
+\begin{itemize}
+    \item Start numbering bits from 1 on the left, as opposed to the traditional numbering of the rightmost bit being 0.
+    \item Mark all bit positions that are powers of 2 as parity bits (positions 1, 2, 4, 8, 16, ...).
+    \item All other bit positions are used for data bits (positions 3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, ...).
+    \item The position of parity bit determines sequence of data bits that it checks:
+    \begin{itemize}
+        \item Bit 1 (0001) checks bits (1,3,5,7,9,11,...), which are bits where \textbf{rightmost bit} of address is 1 (0001, 0011, 0101, 0111, 1001, 1011,...).
+        \item Bit 2 (0010) checks bits (2,3,6,7,10,11,14,15,...), which are the bits where the \textbf{second bit} to the right in the address is 1.
+        \item Bit 4 (0100) checks bits (4–7, 12–15, 20–23,...) , which are the bits where the \textbf{third bit} to the right in the address is 1.
+        \item Bit 8 (1000) checks bits (8–15, 24–31, 40–47,...), which are the bits where the \textbf{fourth bit} to the right in the address is 1.
+    \end{itemize}
+    \item In the end, each bit is covered by at least one parity bit, and looks like this.
+    \item Note: At the cost of one more bit, we can make the minimum Hamming distance in a code be 4. This means we can correct single bit errors and detect double bit errors
+\end{itemize}
+Using the HECC we can then determine which bits are incorrect by looking at the parity bits pattern. Moreover, Since the number is binary, we can correct the error just by inverting the value of the bit. Look at the figure below to see which bits are covered by which of the parity bits in the pattern and how you can look at the pattern to determine the correct bit value.\\
+\begin{figure}
+    \centering
+    \includegraphics[width=12cm, height=3cm]{images/Screen Shot 2023-04-23 at 10.28.59 PM.png}
+    \caption{Bit Coverage using HECC}
+    \label{fig:my_label}
+\end{figure}\\
+An example of the usage of HECC for a byte and using parity bits (alongside the correct type of bit correction) can be demonstrated using the following example figure, and seeing how HECC can detect the incorrection after a particular bit of the pattern is changed.\\
+\begin{figure}
+    \centering
+    \includegraphics[width=12cm, height=8cm]{images/Screen Shot 2023-04-23 at 10.36.44 PM.png}
+    \caption{Checking Parity}
+    \label{fig:parity}
+\end{figure}
+
+
+
+\section{Virtual Machines}
+The broadest definition of Cirtual Machines includes basically all emulation methods that provide a standard software interface. \textit{System virtual machines} present the illusion that the users have an entire computer to themselves, including a copy of the operating system. A single computer runs multiple VMs and can support a number of different operating systems (OSes).\\\\
+The software that supports VMs is called a \textbf{virtual machine monitor (VMM) or hypervisor} the VMM is the heart of virtual machine technology. The underlying hardware platform is called the \textit{host}, and its resources are shared among the \textit{guest} VMs.
+
+\section{Virtual Memory}
+\textbf{Virtual Memory}: a technique that uses main memory as a “cache” for secondary storage.\\\\
+\textbf{Address Space}: a separate range of memory locations accessible only to this program.\\\\
+Virtual Memory implements the translation of a program’s address space to physical addresses (which is an address in main memeory). This translation process enforces protection of a program’s address space from other programs.\\\\
+\textbf{Page Fault}: An event that occurs when an accessed page is not present in main memory. A virtual memory block is called a page, and a virtual memory miss is called a page fault.\\\\
+\textbf{Virtual Address}: An address that corresponds to a location in virtual space and is translated by address mapping to a physical address when memory is accessed. This is done by \textbf{Adrress Translation} also called address mapping which is the process by which a virtual address is mapped to an address used to access memory.\\\\
+In virtual memory, the address is broken into a \textit{virtual page number} and a \textit{page offset}. The virtual page number is translated to the \textit{physical page number}. The physical page number constitutes the upper portion of the physical address, while the page offset, which is not changed, constitutes the lower portion. The number of bits in the page offset field determines the page size.\\\\
+\textbf{Important}: it is also possible for a virtual page to be absent from main memory and not be mapped to a physical address; in that case, the page resides in secondary storage.\\\\
+In virtual memory systems, we locate pages by using a table that indexes the memory; this structure is called a \textbf{page table}, and it resides in memory. The \textbf{Page Table} is the table containing the virtual
+to physical address translations in a virtual memory system. Each entry in the table contains the physical page number for that virtual page if the page is currently in memory, the page table may contain entries for pages not present in memory. Each program has its own page table, which maps the virtual address space of that program to main memory. A \textit{valid bit} is used in each page table entry, just as we did in a cache. If the bit is off, the page is not present in main memory and a page fault occurs.\\\\
+The virtual page number is used to index the page table. If the valid bit is on, the page table supplies the physical page number (i.e., the starting address of the page in memory) corresponding to the virtual page. If the valid bit is off, the page currently resides only on disk, at a specified disk address.\\\\
+\textbf{Page Fault} this occurs, if the valid bit for a virtual page is off, hence we must go one level lower in the memory hierarchy (SSD/Flash/Disk/Secondary Storage). For this we use \textbf{Swap Space} which is the space on the disk reserved for the full virtual memory space of a process.\\\\
+Virtual memory systems must use write-back, performing the individual writes into the page in memory, and copying the page back to disk when it is replaced in the memory instead of using a write buffer.\\\\
+In order to reduce the time looking at the page table to obtain the physical address of data, we use locality of reference to obtain the most recently translated pages. For this specific purpose we use \textbf{Translation Lookaside Buffers} which is a cache that keeps track of recently used address mappings to try to avoid an access to the page table. A TLB miss means one of 2 things either the page is present in memory and we only need to create the missing TLB entry or the page is not in memory and we have a page fault.\\\\
+	
+\end{document}%  
