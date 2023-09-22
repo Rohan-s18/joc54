@@ -1,5 +1,5 @@
 \documentclass[12pt, letterpaper]{article}
-\usepackage{graphicx} % Required for inserting images
+\usepackage{graphicx} 
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{centernot}
